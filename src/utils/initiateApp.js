@@ -9,7 +9,7 @@ DBconnection()
 App.use('/Category',router.CategoryRouter)
 App.use('/SubCategory',router.SubCategoryRouter)
 App.use('/Brand',router.BrandRouter)
-
+App.use('/Product',router.ProductRoutes)
 
 App.all('*',(req,res,next)=>
     res.status(404).json({ message: '404 Not Found URL' })

@@ -36,7 +36,17 @@ const SubCategorySchema = new Schema({
     },
     CustomId:String,
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON: { virtuals: true }, 
+    toObject: { virtuals: true } ,
+})
+SubCategorySchema.virtual('Brands',{
+    foreignField:'SubCategoryID',
+    localField:'_id',
+    ref:'Brand'
+
+
+
 })
 
 export const SubCategoryModel =model('SubCategory',SubCategorySchema)

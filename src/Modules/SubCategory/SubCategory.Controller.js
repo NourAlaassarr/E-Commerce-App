@@ -12,8 +12,8 @@ const nanoid = customAlphabet('abcdefghijklmnop123456789',4)
 export const CreateSubCategory = async(req,res,next)=>{
 const {Categoryid}=req.params
 const {name}= req.body
-
-if(!(await CategoryModel.findById(Categoryid)))
+const Category=await CategoryModel.findById(Categoryid)
+if(!Category)
 {
     return next (new Error('invalid CategoryId',{cause:400}))
 }
@@ -27,9 +27,9 @@ if(!req.file)
     return next (new Error('Please Upload a Subcategory img',{cause:400}))
 }
 const customId= nanoid()
-
+console.log(Category.CustomId)
 const{secure_url,public_id}= await cloudinary.uploader.upload(req.file.path,{
-    folder:`${process.env.Project_Folder}/SubCategories/${customId}`
+    folder:`${process.env.PROJECT_FOLDER}/Categories/${Category.CustomId}/SubCategories/${customId}`
 })
 
 const SubCategoriesObject ={

@@ -19,7 +19,7 @@ CloudFunction(allowedExtensions.Image).single('image'),
 ValidationCoreFunction(Validators.UpdateCategorySchema),
 asyncHandler(CategoryControllers.UpdateCategory))
 
-
+router.delete('/Delete',asyncHandler(CategoryControllers.DeleteCategory))
 router.get('/Get', asyncHandler(CategoryControllers.getAllCategories))
 
 

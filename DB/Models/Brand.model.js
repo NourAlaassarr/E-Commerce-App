@@ -4,7 +4,6 @@ const BrandSchema = new Schema({
 
     name:{
         type:String,
-        unique:true,
         required:true,
         lowercase:true
     },
@@ -14,15 +13,15 @@ const BrandSchema = new Schema({
         required:true,
         lowercase:true
     },
-    Image:{
+    Logo:{
         secure_url: {
             type: String,
             required: true,
-          },
-          public_id: {
+        },
+        public_id: {
             type: String,
             required: true,
-          },
+        },
     },
     createdBy:{
         type:Schema.ObjectId,
@@ -33,7 +32,13 @@ const BrandSchema = new Schema({
         type:Schema.ObjectId,
         required:true,
         ref:'SubCategory',
-    }
+    },
+    CategoryID:{
+        type:Schema.ObjectId,
+        required:true,
+        ref:'Category',
+    },
+    
 },{
     timestamps:true
 })
