@@ -38,6 +38,7 @@ const BrandSchema = new Schema({
         required:true,
         ref:'Category',
     },
+    CustomId:String,
     
 },{
     timestamps:true

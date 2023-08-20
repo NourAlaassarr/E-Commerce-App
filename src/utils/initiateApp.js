@@ -10,9 +10,10 @@ App.use('/Category',router.CategoryRouter)
 App.use('/SubCategory',router.SubCategoryRouter)
 App.use('/Brand',router.BrandRouter)
 App.use('/Product',router.ProductRoutes)
-
+App.use('/Coupon',router.CouponRoutes)
+App.use('/User',router.UserRoutes)
 App.all('*',(req,res,next)=>
-    res.status(404).json({ message: '404 Not Found URL' })
+    res.status(404).json({ message: '404 URL Not Found' })
 )
 App.use(GlobalResponse)
 App.listen(Port,()=>{

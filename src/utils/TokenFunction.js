@@ -1,4 +1,4 @@
-import Jwt, { sign } from 'jsonwebtoken'
+import Jwt from 'jsonwebtoken'
 
 export const generateToken = ({
 
@@ -7,8 +7,7 @@ signature=  process.env.DEFAULT_SIGNATURE,
 expiresIn='1d'
 
 }={})=>{
-    if(!Object.keys(payload.length))
-    {
+    if (!Object.keys(payload).length) { // Check if payload is empty
         return false
     }
     const Token = Jwt.sign(payload,signature,{expiresIn})

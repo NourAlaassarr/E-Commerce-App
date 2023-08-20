@@ -4,6 +4,7 @@ import {CategoryModel}from'../../../DB/Models/Category.model.js'
 import { customAlphabet } from 'nanoid'
 import { SubCategoryModel } from '../../../DB/Models/SubCategory.model.js'
 import { BrandModel } from '../../../DB/Models/Brand.model.js'
+import { ProductModel } from '../../../DB/Models/Products.model.js'
 const nanoid = customAlphabet('abcdef1234',4)
 
 
@@ -50,8 +51,6 @@ export const createCategory = async (req, res, next) => {
 
     res.status(201).json({ message: 'Successfully Added', category })
 }
-
-
 
 
 //Update Category
@@ -110,18 +109,36 @@ if(!CategoryExist)
 await cloudinary.api.delete_resources_by_prefix(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
 await cloudinary.api.delete_folder(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
 // await cloudinary.uploader.destroy(CategoryExist.Image.public_id)
+
 const deleteSub = await SubCategoryModel.deleteMany({
     CategoryID,
 })
 const deleteBrand = await BrandModel.deleteMany({
     CategoryID,
 })
-if(!deleteBrand.deletedCount ||
-    !deleteSub.deletedCount)
-    {
-        return next(new Error('Deletion Failed ',{cause:400}))
-    }
-    res.status(200).json({ message: 'Done'})
+const deleteProduct=await ProductModel.deleteMany({
+    CategoryID,
+})
+if(!deleteBrand.deletedCount)
+{
+    return next(new Error('Deletion Failed ',{cause:400}))
+} 
+if(!deleteSub.deletedCount )
+{
+    return next(new Error('Deletion Failed ',{cause:400}))
+}
+if(!deleteProduct.deletedCount)
+{
+    return next(new Error('Deletion Failed ',{cause:400}))
+}
+    //delete from cloudinary
+    await cloudinary.api.delete_resources_by_prefix(`${process.env.Project_Folder}/Categories/${CategoryExist.CustomId}`)
+    await cloudinary.api.delete_folder(
+        `${process.env.Project_Folder}/Categories/${CategoryExist.CustomId}`,
+    )
+    
+    res.status(200).json({ messsage: 'Deleted Done' })
+    
 
 }
 

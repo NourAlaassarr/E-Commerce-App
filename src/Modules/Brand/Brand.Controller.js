@@ -34,6 +34,7 @@ const BrandOb={
 },
 SubCategoryID:subCategoryId,
 CategoryID:Categoryid,
+CustomId:customId
 }
 const DBbrand= await BrandModel.create(BrandOb)
 if(!DBbrand)

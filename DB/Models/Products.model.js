@@ -37,7 +37,7 @@ stock:{
 createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: false, // TODO: convert into true after creating usermodel
+    required: true, // TODO: convert into true after creating usermodel
 },
 updatedBy: {
     type: Schema.Types.ObjectId,

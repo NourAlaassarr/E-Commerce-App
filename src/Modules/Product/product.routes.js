@@ -8,4 +8,10 @@ const router = Router()
 
 router.post('/Add',CloudFunction(allowedExtensions.Image).array('image',3),
 asyncHandler(ProductController.AddProduct))
+
+router.put('/Update',CloudFunction(allowedExtensions.Image).array('image',3),
+asyncHandler(ProductController.UpdateProduct))
+router.get('/Get',asyncHandler(ProductController.getAllProducts))
+router.get('/ListProducts',asyncHandler(ProductController.listProducts))
+router.get('/GetByName',asyncHandler(ProductController.getAllProducts))
 export default router

@@ -1,11 +1,31 @@
+import Joi from 'joi'
 import joi from 'joi'
+import { Types } from 'mongoose'
 const reqMethods = ['body','query','headers','file','files']
 
+// const objectId = (value, helpers) => {
+//     if (!value.match(/^[0-9a-fA-F]{24}$/)) {
+//     return helpers.error('any.invalid');
+//     }
+//     return value;
+// }
 const objectId = (value, helpers) => {
-    if (!value.match(/^[0-9a-fA-F]{24}$/)) {
-    return helpers.error('any.invalid');
-    }
-    return value;
+    return Types.ObjectId.isValid(value)?true:helpers.message('invalid id')
+}
+
+export const generalFields={
+    email: joi
+    .string()
+    .email({ tlds: { allow: ['com', 'net', 'org'] } })
+    .required(),
+    password: joi
+    .string()
+    .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/)
+    .messages({
+    'string.pattern.base': 'Password regex fail',
+    })
+    .required(),
+_id:Joi.string().custom(objectId)
 }
 export const ValidationCoreFunction =(schema)=>{
     return(req,res,next)=>{
