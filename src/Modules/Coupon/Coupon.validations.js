@@ -9,5 +9,6 @@ body:Joi.object({
         toDate:Joi.date().greater(Joi.ref('fromDate')).required(),
         isPercentage:Joi.boolean().optional(),
         isFixedAmount:Joi.boolean().optional(),
+        couponAssginedToUsers:Joi.array().items().required(),
 }).required(),
 }

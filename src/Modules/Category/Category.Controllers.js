@@ -10,6 +10,7 @@ const nanoid = customAlphabet('abcdef1234',4)
 
 //Create Category
 export const createCategory = async (req, res, next) => {
+    const{_id}=req.authUser
     const { name } = req.body
     const slug = slugify(name, '_')
 
@@ -39,6 +40,7 @@ export const createCategory = async (req, res, next) => {
         public_id,
     },
     CustomId:customId,
+    createdBy:_id,
     }
 
     const category = await CategoryModel.create(categoryObject)
@@ -56,21 +58,23 @@ export const createCategory = async (req, res, next) => {
 //Update Category
 export const UpdateCategory = async(req,res,next)=>{
     const {CategoryId}=req.params
+    console.log({CategoryId})
     const {name}=req.body
-    const Category = await CategoryModel.findById({CategoryId})
+    const{_id}=req.authUser
+
+    console.log({_id:CategoryId})
+    const Category = await CategoryModel.findOne({_id:CategoryId,createdBy:_id})
     if(!Category)
     {
         return next(new Error ('Invalid Category Id', {cause:400}))
     }
-    if(name){
-    if(Category.name==name.tolowercase())
-    {
-        return next(
-            new Error('please enter different name from the old category name', {
-            cause: 400,
-            }),
+    if (name) {
+        // different from old name
+        if (Category.name == name.toLowerCase()) {
+            return next(
+            new Error('please enter different name from the old category name', {cause: 400,}),
         )
-    }
+        }
     if (await CategoryModel.findOne({ name })) {
         return next(
             new Error('please enter different category name', { cause: 400 }),
@@ -90,6 +94,7 @@ if(req.file)
     )
     Category.Image={secure_url,public_id}
 }
+Category.updatedBy=_id
 await Category.save()
 res.status(200).json({ message: ' Successfully Updated', Category })
 }
@@ -101,7 +106,8 @@ res.status(200).json({ message: ' Successfully Updated', Category })
 //Delete Category
 export const DeleteCategory = async(req,res,next)=>{
 const {CategoryID}=req.query
-const CategoryExist = await CategoryModel.findByIdAndDelete(CategoryID)
+const {_id}=req.authUser
+const CategoryExist = await CategoryModel.findOneAndDelete({_id:CategoryID,createdBy:_id})
 if(!CategoryExist)
 {
     return next(new Error('Invalid Category Id',{cause:400}))
@@ -136,7 +142,6 @@ if(!deleteProduct.deletedCount)
     await cloudinary.api.delete_folder(
         `${process.env.Project_Folder}/Categories/${CategoryExist.CustomId}`,
     )
-    
     res.status(200).json({ messsage: 'Deleted Done' })
     
 

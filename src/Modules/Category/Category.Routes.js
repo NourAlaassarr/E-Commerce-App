@@ -6,20 +6,23 @@ import * as CategoryControllers from './Category.Controllers.js'
 import {ValidationCoreFunction}from '../../Middleware/Validation.js'
 import * as Validators from './Category.Validator.js'
 import  SubCategoryRouter  from "../SubCategory/SubCategory.routes.js";
+import {isAuth}from'../../Middleware/auth.js'
 const router = Router()
-router.use('/:Categoryid',SubCategoryRouter)
+router.use('/:CategoryId',SubCategoryRouter)
 
-router.post('/Add',
+router.post('/Add',isAuth(),
 CloudFunction(allowedExtensions.Image).single('image'),
 ValidationCoreFunction(Validators.CreateCategorySchema),
 asyncHandler(CategoryControllers.createCategory))
 
-router.put('/:CategoryId',
+router.put('/Update/:CategoryId/',
+isAuth(),
 CloudFunction(allowedExtensions.Image).single('image'),
 ValidationCoreFunction(Validators.UpdateCategorySchema),
 asyncHandler(CategoryControllers.UpdateCategory))
 
-router.delete('/Delete',asyncHandler(CategoryControllers.DeleteCategory))
+router.delete('/Delete',isAuth(),
+asyncHandler(CategoryControllers.DeleteCategory))
 router.get('/Get', asyncHandler(CategoryControllers.getAllCategories))
 
 

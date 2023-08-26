@@ -26,8 +26,8 @@ const SubCategorySchema = new Schema({
     },
     createdBy:{
         type:Schema.ObjectId,
-        ref:'User',
-        required:false, // TODO CONVERT TO TRUE AFTER CREATING USERMODEL
+        ref:'user',
+        required:true, 
     },
     CategoryID:{
         type:Schema.ObjectId,

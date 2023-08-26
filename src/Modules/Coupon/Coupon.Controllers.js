@@ -1,4 +1,5 @@
 import { CopounModel } from "../../../DB/Models/Coupon.model.js"
+import { UserModel } from "../../../DB/Models/user.model.js"
 
 export const AddCoupon= async (req,res,next)=>
 {
@@ -9,6 +10,7 @@ export const AddCoupon= async (req,res,next)=>
         toDate,
         isPercentage,
         isFixedAmount,
+        couponAssginedToUsers,
     } = req.body
     //check coupon
     const IscouponDuplicate = await CopounModel.findOne({couponCode})
@@ -24,6 +26,22 @@ export const AddCoupon= async (req,res,next)=>
             }),
         )
     }
+
+   ////// Assign Users///////////
+    let usersIds = []
+    for(const User of couponAssginedToUsers){
+        usersIds.push(User.userId)
+
+    }
+    const usersCheck = await UserModel.find({
+    _id: {
+    $in: usersIds,
+    },
+})
+
+if (usersIds.length !== usersCheck.length) {
+    return next(new Error('invalid userIds', { cause: 400 }))
+}
     const couponObject = {
         couponCode,
         couponAmount,
@@ -31,6 +49,9 @@ export const AddCoupon= async (req,res,next)=>
         toDate,
         isPercentage,
         isFixedAmount,
+        createdBy:req.authUser._id,
+        couponAssginedToUsers
+        
     }
     const couponDb = await CopounModel.create(couponObject)
 if (!couponDb) {

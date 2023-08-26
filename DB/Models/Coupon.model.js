@@ -27,22 +27,23 @@ const CouponSchema = new Schema({
     },
     createdBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: false, // TODO: convert into true after creating usermodel
+        ref: 'user',
+        required: true, 
     },
     updatedBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
     },
     deletedBy: {
         type: Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'user',
     },
     couponAssginedToUsers: [
         {
         userId: {
             type: Schema.Types.ObjectId,
-            ref: 'User',
+            ref: 'user',
+            required:true
         },
         maxUsage: {
             type: Number,
