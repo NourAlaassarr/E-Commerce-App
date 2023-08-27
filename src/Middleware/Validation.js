@@ -1,7 +1,7 @@
 import Joi from 'joi'
 import joi from 'joi'
 import { Types } from 'mongoose'
-const reqMethods = ['body','query','headers','file','files']
+const reqMethods = ['body','query','headers','file','files',"params"]
 
 // const objectId = (value, helpers) => {
 //     if (!value.match(/^[0-9a-fA-F]{24}$/)) {
@@ -44,9 +44,11 @@ export const ValidationCoreFunction =(schema)=>{
         }
 
         if (ValidationErrArray.length) {
-            return res
-            .status(400)
-            .json({ message: 'Validation Error', Errors: ValidationErrArray })
+            // return res
+            // .status(400)
+            // .json({ message: 'Validation Error', Errors: ValidationErrArray })
+            req.ValidationErrArray=ValidationErrArray
+            return next(new Error('',{cause:400}))  
         }
     
         next()

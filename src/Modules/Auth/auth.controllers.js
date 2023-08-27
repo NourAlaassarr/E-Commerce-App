@@ -99,7 +99,7 @@ export const SignIN = async (req,res,next)=>{
             _id:user._id,
             role:user.role
         },
-        signature:process.env.SIGN_IN_TOKEN,
+        signature:process.env.SIGN_IN_TOKEN_SECRET,
         expiresIn:'1h',
     })
 

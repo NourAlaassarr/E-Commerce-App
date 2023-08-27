@@ -3,10 +3,14 @@ import { BrandModel } from '../../../DB/Models/Brand.model.js'
 import { CategoryModel } from '../../../DB/Models/Category.model.js'
 import { SubCategoryModel } from '../../../DB/Models/SubCategory.model.js'
 import cloudinary from '../../utils/CloudinaryConfig.js'
+
 import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('abcdef1234',4)
+
+
 export const AddBrand = async (req,res,next)=>{
 const{name}=req.body
+const{_id}=req.authUser
 const{subCategoryId,Categoryid}=req.query
 const SubCategoryExists = await SubCategoryModel.findById(subCategoryId)
 const Categoryidexist = await CategoryModel.findById(Categoryid)
@@ -34,7 +38,8 @@ const BrandOb={
 },
 SubCategoryID:subCategoryId,
 CategoryID:Categoryid,
-CustomId:customId
+CustomId:customId,
+createdBy:_id
 }
 const DBbrand= await BrandModel.create(BrandOb)
 if(!DBbrand)
@@ -44,3 +49,4 @@ if(!DBbrand)
 }
 res.status(201).json({Message:'successfully Created',DBbrand})
 }
+//ToDo delete Brand

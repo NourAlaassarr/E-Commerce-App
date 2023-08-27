@@ -1,6 +1,8 @@
 import {GlobalResponse} from './ErrorHandling.js'
 import { DBconnection } from '../../DB/Connections.js'
 import * as router from '../Modules/index.routes.js'
+import { gracefulShutdown } from 'node-schedule'
+import{changeCouponStatus} from './Crons.js'
 export const InitiateApp =(App,express)=>{
 const Port =process.env.PORT
 
@@ -13,10 +15,13 @@ App.use('/Product',router.ProductRoutes)
 App.use('/Coupon',router.CouponRoutes)
 App.use('/User',router.UserRoutes)
 App.use('/Auth',router.AuthRoutes)
+App.use('/Cart',router.CartRoutes)
 App.all('*',(req,res,next)=>
     res.status(404).json({ message: '404 URL Not Found' })
 )
 App.use(GlobalResponse)
+changeCouponStatus()
+// gracefulShutdown
 App.listen(Port,()=>{
     console.log(`---------------Server is Running on port number ${Port} !---------------`)
 })

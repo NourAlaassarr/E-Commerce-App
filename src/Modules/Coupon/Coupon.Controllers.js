@@ -58,3 +58,14 @@ if (!couponDb) {
     return next(new Error('fail to add coupon', { cause: 400 }))}
 res.status(201).json({ message: 'Done', couponDb })
 }
+
+export const deleteCoupon= async(req,res,next)=>{
+    const { _id } = req.query
+    const userId = req.authUser._id
+    const IsValidCopoun=await CopounModel.findByIdAndDelete({_id,createdBy:userId })
+    console.log(_id)
+    if (!IsValidCopoun) {
+        return next(new Error('invalid couponId', { cause: 400 }))
+    }
+    res.status(201).json({ message: 'done' })
+    }

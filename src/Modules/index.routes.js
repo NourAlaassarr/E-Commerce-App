@@ -5,4 +5,5 @@ import ProductRoutes from './Product/product.routes.js'
 import CouponRoutes from './Coupon/Coupon.routes.js'
 import UserRoutes from './user/user.routes.js'
 import AuthRoutes from './Auth/auth.routes.js'
-export{CategoryRouter,SubCategoryRouter,BrandRouter,ProductRoutes,CouponRoutes,UserRoutes,AuthRoutes}
+import CartRoutes from './Cart/cart.routes.js'
+export{CategoryRouter,SubCategoryRouter,BrandRouter,ProductRoutes,CouponRoutes,UserRoutes,AuthRoutes,CartRoutes}

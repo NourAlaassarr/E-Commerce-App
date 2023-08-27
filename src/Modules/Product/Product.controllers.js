@@ -20,7 +20,7 @@ export const AddProduct = async (req,res,next)=>{
         stock,
         PriceAfterDiscount,
 }= req.body
-
+const UserId = req.authUser
 const {CategoryId,SubCategoryId,BrandId}=req.query
 const SubCategoryExist = await SubCategoryModel.findById(SubCategoryId)
 if(!SubCategoryExist)
@@ -66,7 +66,7 @@ for (const file of req.files) {
 }
 req.body.image=Images
 req.body.customId=customId
-req.body.createdby=req.authUser._id
+// req.body.createdBy=req.authUser._id
 req.imagePath=`${process.env.Project_Folder}/Categories/${categoryExist.CustomId}/subCategories/${SubCategoryExist.CustomId}/Brands/${BrandExist.CustomId}/Products/${customId}`
 const ProductOB={
     name,
@@ -83,6 +83,7 @@ const ProductOB={
     SubCategoryId,
     BrandId,
     PriceAfterDiscount,
+    createdBy:UserId,
 }
 const product = await ProductModel.create(ProductOB)
 if (!product) {
@@ -105,9 +106,10 @@ export const UpdateProduct = async(req,res,next)=>
         stock,
         PriceAfterDiscount,
 }= req.body
+const UserId = req.authUser
 
 const { productId,CategoryId,SubCategoryId,BrandId}=req.query
-const finfproduct = await ProductModel.findOne({_id:productId,createdBy:req.authUser._id})
+const finfproduct = await ProductModel.findOne({_id:productId,createdBy:UserId})
 if(!finfproduct){
     return next(new Error('invalid product id',{cause:400}))
 }
@@ -182,7 +184,8 @@ else if(price)
         await cloudinary.api.delete_resources(publicIds)
         product.Images=ImageArr
     }
-    req.body.updatedBy=req.authUser._id
+    // req.body.updatedBy=req.authUser._id
+    finfproduct.updatedBy=UserId
     if(name)
     {
         product.name=name
@@ -211,7 +214,7 @@ await product.save()
 res.status(200).json({Message:"done",product})
     }
 
-//ToDo delete
+//ToDo delete Product
 
 
 

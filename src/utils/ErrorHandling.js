@@ -17,6 +17,10 @@ export const GlobalResponse =(err,req,res,next)=>
 {
     if(err)
     {
+        if(req.ValidationErrArray)
+        {
+            return res.status(err['cause'] || 400).json({Message:req.ValidationErrArray})
+        }
         return res.status(err['cause'] || 500).json({Message:err.message})
     }
 }

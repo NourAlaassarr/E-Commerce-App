@@ -12,6 +12,9 @@ router.post('/Add',
 isAuth(),
 ValidationCoreFunction(Validators.AddCouponSchema),asyncHandler(CouponControllers.AddCoupon))
 
+router.delete('/Delete',isAuth(),ValidationCoreFunction(Validators.DeleteCouponSchema),
+asyncHandler(CouponControllers.deleteCoupon))
+
 
 
 export default router

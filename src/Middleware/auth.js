@@ -15,7 +15,7 @@ export const isAuth = ()=>{
             return res.status(400).json({message: 'No token provided.'})
         }
         try{
-        const decoded=VerifyToken({token:tokens,signature:process.env.SIGN_IN_TOKEN})
+        const decoded=VerifyToken({token:tokens,signature:process.env.SIGN_IN_TOKEN_SECRET})
         // console.log({decoded})
         if(!decoded || !decoded._id)
         {
@@ -52,7 +52,7 @@ export const isAuth = ()=>{
         // user.token= userToken
         // await user.save()
         await UserModel.findOneAndUpdate({
-            token},{
+            tokens},{
             token:userToken  
             })
         return res.status(200).json({ message: 'Token refreshed', userToken })

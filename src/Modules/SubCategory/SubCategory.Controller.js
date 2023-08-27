@@ -12,6 +12,7 @@ const nanoid = customAlphabet('abcdefghijklmnop123456789',4)
 export const CreateSubCategory = async(req,res,next)=>{
 const {Categoryid}=req.params
 const {name}= req.body
+const {_id}=req.authUser
 const Category=await CategoryModel.findById(Categoryid)
 if(!Category)
 {

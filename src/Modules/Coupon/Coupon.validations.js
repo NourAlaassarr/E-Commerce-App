@@ -1,5 +1,6 @@
 
 import Joi from "joi"
+import { generalFields } from "../../Middleware/Validation.js"
 
 export const AddCouponSchema={
 body:Joi.object({
@@ -11,4 +12,11 @@ body:Joi.object({
         isFixedAmount:Joi.boolean().optional(),
         couponAssginedToUsers:Joi.array().items().required(),
 }).required(),
+}
+
+export const DeleteCouponSchema={
+    query:Joi.object({
+        _id:generalFields._id.required(),
+
+    })
 }
