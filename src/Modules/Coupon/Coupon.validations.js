@@ -12,6 +12,9 @@ body:Joi.object({
         isFixedAmount:Joi.boolean().optional(),
         couponAssginedToUsers:Joi.array().items().required(),
 }).required(),
+headers:Joi.object({
+    token:Joi.string().required()
+}).options({allowUnknown:true})
 }
 
 export const DeleteCouponSchema={

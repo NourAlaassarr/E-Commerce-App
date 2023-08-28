@@ -18,7 +18,6 @@ export const AddProduct = async (req,res,next)=>{
         colors,
         size,
         stock,
-        PriceAfterDiscount,
 }= req.body
 const UserId = req.authUser
 const {CategoryId,SubCategoryId,BrandId}=req.query
@@ -42,9 +41,8 @@ if (!BrandExist) {
 const slug = slugify(name,{
     replacement:'_'
 })
-if(appliedDiscount)
-{
-    const PriceAfterDiscount=price - price * ((appliedDiscount || 0) / 100)}
+ const PriceAfterDiscount = price * (1 - (appliedDiscount || 0) / 100)
+
 
 if(!req.files)
 {

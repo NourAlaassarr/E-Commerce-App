@@ -50,6 +50,10 @@ const CouponSchema = new Schema({
             required: true,
             default: 1,
         },
+        usageCount:{
+            type:Number,
+            default:0,
+        }
         },
     ],
     fromDate: {

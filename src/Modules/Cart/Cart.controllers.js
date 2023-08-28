@@ -37,11 +37,7 @@ export const Add = async(req,res,next)=>{
         let SubTotal=0
         for(const Product of userCart.products)
         {const ProductExsits= await ProductModel.findById(Product.ProductId)
-            if(ProductExsits.PriceAfterDiscount==0)
-            {
-                SubTotal+=(ProductExsits.price*Product.quantity || 0)
-            }
-            SubTotal+=(ProductExsits.PriceAfterDiscount*Product.quantity || 0)
+            SubTotal+=(ProductExsits?.PriceAfterDiscount*Product.quantity || 0)
         }
         const NewCart=await CartModel.findOneAndUpdate({userId},{
             subTotal:SubTotal,
@@ -84,7 +80,6 @@ export const Delete = async(req,res,next)=>{
             UserCart.products.splice(UserCart.products.indexOf(ele),1)
         }
     })
-    UserCart.subTotal=0
     await UserCart.save()
     res.status(200).json({Message:'Done',UserCart})
 }
