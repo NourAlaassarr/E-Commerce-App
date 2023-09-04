@@ -7,10 +7,11 @@ import {ValidationCoreFunction}from '../../Middleware/Validation.js'
 import * as Validators from './Category.Validator.js'
 import  SubCategoryRouter  from "../SubCategory/SubCategory.routes.js";
 import {isAuth}from'../../Middleware/auth.js'
+import { SystemRules } from "../../utils/SystemRules.js";
 const router = Router()
 router.use('/:CategoryId',SubCategoryRouter)
 
-router.post('/Add',isAuth(),
+router.post('/Add',isAuth([SystemRules.Admin,SystemRules.Super]),
 CloudFunction(allowedExtensions.Image).single('image'),
 ValidationCoreFunction(Validators.CreateCategorySchema),
 asyncHandler(CategoryControllers.createCategory))

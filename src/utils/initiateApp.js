@@ -3,10 +3,12 @@ import { DBconnection } from '../../DB/Connections.js'
 import * as router from '../Modules/index.routes.js'
 import { gracefulShutdown } from 'node-schedule'
 import{changeCouponStatus} from './Crons.js'
+import cors from 'cors'
 export const InitiateApp =(App,express)=>{
-const Port =process.env.PORT
+const Port =process.env.PORT || 5000
 
 App.use(express.json()) 
+App.use(cors()) // allow anyone
 DBconnection()
 App.get('/',(req,res)=>res.send("hello"))
 App.use('/Category',router.CategoryRouter)
@@ -28,3 +30,5 @@ App.listen(Port,()=>{
     console.log(`---------------Server is Running on port number ${Port} !---------------`)
 })
 }
+
+//cors
