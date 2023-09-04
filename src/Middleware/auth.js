@@ -4,7 +4,7 @@ import Jwt  from "jsonwebtoken"
 import { VerifyToken, generateToken } from '../utils/TokenFunction.js'
 
 
-export const isAuth = ()=>{
+export const isAuth = (roles)=>{
     return async(req,res,next)=>{
 
         try{
@@ -32,7 +32,12 @@ export const isAuth = ()=>{
         // {
         //     return res.status(400).json({Message:'token expired after change password'})
         // }
-
+        // console.log(roles)
+        // console.log(findUser.role)
+        // if (!roles.includes(findUser.role))
+        // {
+        //     return next(new Error('unauthorized to acceess this api',{cause:401}))
+        // }
         req.authUser=findUser
         next()
     }

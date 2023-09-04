@@ -4,6 +4,10 @@ import{IsCouponValid}from'../../utils/CouponValidatin.js'
 import { CopounModel }from'../../../DB/Models/Coupon.model.js'
 import { ProductModel} from'../../../DB/Models/Products.model.js'
 import { OrderModel } from '../../../DB/Models/order.model.js'
+import { nanoid } from 'nanoid'
+import{sendmailService}from '../../Services/SendEmailService.js'
+import createInvoice from '../../utils/pdfkit.js'
+
 
 //Create Order
 export const CreateOrder = async (req,res,next)=>{
@@ -105,6 +109,38 @@ await ProductModel.findByIdAndUpdate({_id:ProductId},{
 },
 )
 //TODO:Remove Product From UserCart if Exist
+
+//invoice
+const orderCode = `${req.authUser.userName}_${nanoid(3)}`
+  // generat invoice object
+const orderinvoice = {
+    shipping: {
+        name: req.authUser.userName,
+        address: OrderDB.Address,
+        city: 'Cairo',
+        state: 'Cairo',
+        country: 'Cairo',
+    },
+    orderCode,
+    date: OrderDB.createdAt,
+    items: OrderDB.products,
+    subTotal: OrderDB.subTotal,
+    paidAmount: OrderDB.paidAmount,
+}
+
+// fs.unlink()
+await createInvoice(orderinvoice, `${orderCode}.pdf`)
+await sendmailService({
+    to: req.authUser.email,
+    subject: 'Order Confirmation',
+    message: '<h1> please find your invoice pdf below</h1>',
+    attachments: [
+      {
+        path: `./Files/${orderCode}.pdf`,
+      },
+    ],
+  })
+
 return res.status(201).json({message:'done',OrderDB})
 }
 return next(new Error('Fail to Create Order',{cause:400}))
