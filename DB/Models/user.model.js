@@ -1,7 +1,7 @@
 
 import { Schema,model } from "mongoose";
 import pkg from 'bcrypt'
-
+import {SystemRules}from'../../src/utils/SystemRules.js'
 const UserSchema = new Schema({
 userName:{
     type:String,
@@ -39,8 +39,8 @@ required:true
 role:{
     type:String,
     lowercase:true,
-    enum:['user','admin','superadmin'],
-    default:'user',
+    enum:[SystemRules.User,SystemRules.Admin,SystemRules.Super],
+    default:SystemRules.User,
 },
 gender:{
     type:String,
