@@ -8,6 +8,7 @@ const Port =process.env.PORT
 
 App.use(express.json()) 
 DBconnection()
+App.get('/',(req,res)=>res.send("hello"))
 App.use('/Category',router.CategoryRouter)
 App.use('/SubCategory',router.SubCategoryRouter)
 App.use('/Brand',router.BrandRouter)
