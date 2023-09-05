@@ -3,7 +3,7 @@
 import {CopounModel} from '../../DB/Models/Coupon.model.js'
 import moment from 'moment-timezone'
 
-export const IsCouponValid = async({couponCode, userId}={})=>
+export const IsCouponValid = async({couponCode, userId,next}={})=>
 {
     const Coupon = await CopounModel.findOne({couponCode})
     if(!Coupon)
