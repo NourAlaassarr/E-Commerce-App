@@ -26,10 +26,10 @@ export const CreateOrder = async (req,res,next)=>{
 if(couponCode)
 {
     const Coupon =await CopounModel.findOne({couponCode}).select('isPercentage isFixedAmount couponAmount couponAssginedToUsers')
-    const IsValidCoupon = await IsCouponValid({couponCode,userId,next})
+    const IsValidCoupon = await IsCouponValid({couponCode,userId})
     if(IsValidCoupon !==true)
     {
-        return IsValidCoupon
+        return next(new Error(IsCouponValid.msg,{cause:400}))
     }
     req.Coupon=Coupon
 }

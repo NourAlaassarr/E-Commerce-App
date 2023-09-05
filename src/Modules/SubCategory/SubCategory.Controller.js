@@ -10,13 +10,16 @@ import cloudinary from "../../utils/CloudinaryConfig.js"
 const nanoid = customAlphabet('abcdefghijklmnop123456789',4)
 
 export const CreateSubCategory = async(req,res,next)=>{
-const {Categoryid}=req.params
+const { Categoryid } = req.query;
 const {name}= req.body
 const {_id}=req.authUser
-const Category=await CategoryModel.findById(Categoryid)
+
+const Category= await CategoryModel.findById({_id:Categoryid})
+console.log(Categoryid)
+console.log(Category)
 if(!Category)
 {
-    return next (new Error('invalid CategoryId',{cause:400}))
+    return next (new Error('invalid CategoryIdd',{cause:400}))
 }
 if((await SubCategoryModel.findOne({name})))
 {

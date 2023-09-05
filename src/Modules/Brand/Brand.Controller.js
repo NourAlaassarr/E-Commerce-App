@@ -14,10 +14,12 @@ const{_id}=req.authUser
 const{subCategoryId,Categoryid}=req.query
 const SubCategoryExists = await SubCategoryModel.findById(subCategoryId)
 const Categoryidexist = await CategoryModel.findById(Categoryid)
-if(!SubCategoryExists ||! Categoryidexist)
+
+if(!SubCategoryExists ||!Categoryidexist)
 {
     return next(new Error('invalid Categories',{cause:400}))
 }
+//slug
 const slug = slugify(name,{
     replacement:'_',
     lower:true,
