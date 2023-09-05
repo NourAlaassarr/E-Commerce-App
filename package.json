@@ -17,11 +17,11 @@
     "node-cron": "^3.0.2",
     "node-schedule": "^2.1.1",
     "nodemailer": "^6.9.4",
+    "nodemon": "3.0.1",
     "path": "^0.12.7",
     "pdfkit": "^0.13.0",
     "qrcode": "^1.5.3",
-    "slugify": "^1.6.6",
-    "nodemon": "3.0.1"
+    "slugify": "^1.6.6"
   },
   "name": "e-commerce",
   "version": "1.0.0",

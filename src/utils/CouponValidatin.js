@@ -13,7 +13,7 @@ export const IsCouponValid = async({couponCode, userId,next}={})=>
         }
     }
     //Expiration
-    if(Coupon.CouponStatus=='Expired' ||moment(Coupon.toDate).isBefore(moment().tz('Africa/Cairo'))){
+    if(Coupon.CouponStatus=='Expired' || moment(Coupon.toDate).isBefore(moment().tz('Africa/Cairo'))){
         return {
             msg:"Coupon is Expired",
         }

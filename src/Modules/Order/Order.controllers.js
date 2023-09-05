@@ -7,7 +7,7 @@ import { OrderModel } from '../../../DB/Models/order.model.js'
 import { nanoid } from 'nanoid'
 import{sendmailService}from '../../Services/SendEmailService.js'
 import createInvoice from '../../utils/pdfkit.js'
-
+import {generateQRcode}from'../../utils/QRFunction.js'
 
 //Create Order
 export const CreateOrder = async (req,res,next)=>{
@@ -26,7 +26,7 @@ export const CreateOrder = async (req,res,next)=>{
 if(couponCode)
 {
     const Coupon =await CopounModel.findOne({couponCode}).select('isPercentage isFixedAmount couponAmount couponAssginedToUsers')
-    const IsValidCoupon = await IsCouponValid({couponCode,userId})
+    const IsValidCoupon = await IsCouponValid({couponCode,userId,next})
     if(IsValidCoupon !==true)
     {
         return next(new Error(IsValidCoupon.msg,{cause:400}))
@@ -110,6 +110,10 @@ await ProductModel.findByIdAndUpdate({_id:ProductId},{
 )
 //TODO:Remove Product From UserCart if Exist
 
+
+//Order QRCODE...............
+const OrderQrcode = await generateQRcode({data:{orderId:OrderDB._id, products:OrderDB.products}})
+
 //invoice
 const orderCode = `${req.authUser.userName}_${nanoid(3)}`
   // generat invoice object
@@ -135,13 +139,13 @@ await sendmailService({
     subject: 'Order Confirmation',
     message: '<h1> please find your invoice pdf below</h1>',
     attachments: [
-      {
+    {
         path: `./Files/${orderCode}.pdf`,
-      },
+    },
     ],
-  })
+})
 
-return res.status(201).json({message:'done',OrderDB})
+return res.status(201).json({message:'done',OrderDB,OrderQrcode})
 }
 return next(new Error('Fail to Create Order',{cause:400}))
 
