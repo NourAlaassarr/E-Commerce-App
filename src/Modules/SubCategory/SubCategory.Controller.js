@@ -15,8 +15,8 @@ const {name}= req.body
 const {_id}=req.authUser
 
 const Category= await CategoryModel.findById({_id:Categoryid})
-console.log(Categoryid)
-console.log(Category)
+// console.log(Categoryid)
+// console.log(Category)
 if(!Category)
 {
     return next (new Error('invalid CategoryIdd',{cause:400}))

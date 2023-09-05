@@ -29,7 +29,7 @@ if(couponCode)
     const IsValidCoupon = await IsCouponValid({couponCode,userId})
     if(IsValidCoupon !==true)
     {
-        return next(new Error(IsCouponValid.msg,{cause:400}))
+        return next(new Error(IsValidCoupon.msg,{cause:400}))
     }
     req.Coupon=Coupon
 }
