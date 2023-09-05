@@ -10,7 +10,7 @@ const Port =process.env.PORT || 5000
 App.use(express.json()) 
 App.use(cors()) // allow anyone
 DBconnection()
-App.get('/',(req,res)=>res.send("hello"))
+App.get('/',(req,res)=>res.send("helloworldd"))
 App.use('/Category',router.CategoryRouter)
 App.use('/SubCategory',router.SubCategoryRouter)
 App.use('/Brand',router.BrandRouter)
