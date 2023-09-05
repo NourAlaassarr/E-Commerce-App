@@ -45,6 +45,7 @@ const SubCategoriesObject ={
         secure_url,
         public_id,
     },
+    createdBy:_id,
 }
 const SubCategory =  await SubCategoryModel.create(SubCategoriesObject)
 if(!SubCategory)
