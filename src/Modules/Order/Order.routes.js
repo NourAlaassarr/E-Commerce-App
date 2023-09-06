@@ -10,4 +10,6 @@ const router=Router()
 router.post('/Add',isAuth(),asyncHandler(OrderControllers.CreateOrder)
 )
 router.post('/CartToOrder',isAuth(),asyncHandler(OrderControllers.FromCartToOrder))
+router.patch('/successOrder',asyncHandler(OrderControllers.successPayament))
+router.patch('/cancelOrder',asyncHandler(OrderControllers.CancelPayment))
 export default router

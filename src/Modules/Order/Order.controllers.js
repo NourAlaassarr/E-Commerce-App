@@ -8,7 +8,9 @@ import { nanoid } from 'nanoid'
 import{sendmailService}from '../../Services/SendEmailService.js'
 import createInvoice from '../../utils/pdfkit.js'
 import {generateQRcode}from'../../utils/QRFunction.js'
-
+import {paymentFunction}from'../../utils/Payment.js'
+import { VerifyToken, generateToken } from '../../utils/TokenFunction.js'
+import Stripe from 'stripe'
 //Create Order
 export const CreateOrder = async (req,res,next)=>{
     const{
@@ -88,20 +90,71 @@ const OrderOb ={
 
 }
 const OrderDB= await OrderModel.create(OrderOb)
-// increase usageCount for coupon usage
-if(OrderDB)
+
+if(!OrderDB)
 {
-    if(req.Coupon)
-    {
-        for(const user of req.Coupon.couponAssginedToUsers)
-        {
-            if(user.userId.toString() == userId.toString())
-            {
-                user.usageCount +=1
-            }
+    return next(new Error('Fail to Create Order',{cause:400}))
+}
+
+//................Payment....................
+let ordersession
+if (OrderDB.PaymentMethod == 'Card')
+{
+    if(req.Coupon){
+        const stripe= new Stripe(process.env.STRIPE_SECRET_KEY)
+        let coupon
+        //percentage
+        if(req.Coupon.isPercentage){
+            coupon =await stripe.coupons.create({
+                percent_off:req.Coupon.couponAmount
+            })
         }
-        await req.Coupon.save()
+        //fixed amount
+            if(req.Coupon.isFixedAmount){
+                coupon =await stripe.coupons.create({
+                    amount_off:req.Coupon.couponAmount *100,
+                    currency:'EGP'
+                })
+            }
+            req.CouponId=coupon.id
     }
+    
+            const tokenOrder = generateToken({ payload: { orderId: OrderDB._id }, signature: process.env.ORDER_TOKEN, expiresIn: '1d' })
+            console.log( `${req.protocol}://${req.headers.host}/Order/successOrder?token=${tokenOrder}`)
+    ordersession = await paymentFunction({
+        payment_method_types:['card'],
+        mode: 'payment',
+        customer_email: req.authUser.email,
+        metadata: { orderId: OrderDB._id.toString() },
+        success_url: `${req.protocol}://${req.headers.host}/Order/successOrder?token=${tokenOrder}`,
+        cancel_url: `${req.protocol}://${req.headers.host}/Order/cancelOrder?token=${tokenOrder}`,
+        line_items: OrderDB.products.map((ele) => {
+        return {
+            price_data: {
+                currency: 'EGP',
+                product_data: {
+                name: ele.name,
+            },
+              unit_amount: ele.price * 100,
+            },
+            quantity: ele.quantity,
+        }
+        }),
+        discounts: req.CouponId ? [{ coupon: req.CouponId }] : [],
+    })
+}
+// increase usageCount for coupon usage
+if(req.Coupon)
+{
+    for(const user of req.Coupon.couponAssginedToUsers)
+    {
+        if(user.userId.toString() == userId.toString())
+        {
+            user.usageCount +=1
+        }
+    }
+    await req.Coupon.save()
+}
 
 // decrease product's stock by order's product quantity
 await ProductModel.findByIdAndUpdate({_id:ProductId},{
@@ -111,10 +164,8 @@ await ProductModel.findByIdAndUpdate({_id:ProductId},{
 //TODO:Remove Product From UserCart if Exist
 
 
-//Order QRCODE...............
-const OrderQrcode = await generateQRcode({data:{orderId:OrderDB._id, products:OrderDB.products}})
 
-//invoice
+//..................invoice...................
 const orderCode = `${req.authUser.userName}_${nanoid(3)}`
   // generat invoice object
 const orderinvoice = {
@@ -131,10 +182,9 @@ const orderinvoice = {
     subTotal: OrderDB.subTotal,
     paidAmount: OrderDB.paidAmount,
 }
-
 // fs.unlink()
 await createInvoice(orderinvoice, `${orderCode}.pdf`)
-await sendmailService({
+const isEmailSent=await sendmailService({
     to: req.authUser.email,
     subject: 'Order Confirmation',
     message: '<h1> please find your invoice pdf below</h1>',
@@ -144,12 +194,68 @@ await sendmailService({
     },
     ],
 })
-
-return res.status(201).json({message:'done',OrderDB,OrderQrcode})
+if (!isEmailSent) {
+    return next(new Error('email fail', { cause: 500 }))
 }
-return next(new Error('Fail to Create Order',{cause:400}))
+
+
+res.status(201).json({
+    message: 'Done',
+    OrderDB /* , orderQr*/,
+    checkOutUrl: ordersession.url,
+})
+}
+
+export const successPayament=async(req,res,next)=>{
+    const{token}=req.query
+    const decodeData=VerifyToken({token,signature:process.env.ORDER_TOKEN})
+    const Order = await OrderModel.findOne({_id:decodeData.orderId,OrderStatus:'Pending'})
+    if(!Order){
+        return next(new Error('Invalid OrderId',{cause:400}))
+    }
+    Order.OrderStatus='Confirmed'
+    await Order.save()
+    res.status(200).json({Message:'Your Order is Confirmed',Order})
 
 }
+export const CancelPayment=async(req,res,next)=>{
+    const{token}=req.query
+    const decodeData=VerifyToken({token,signature:process.env.ORDER_TOKEN})
+    const Order = await OrderModel.findOne({_id:decodeData.orderId})
+    if(!Order){
+        return next(new Error('Invalid OrderId',{cause:400}))
+    }
+    //approach one orderStatus canceled
+    Order.OrderStatus='canceled'
+    await Order.save()
+    //approach two delete order
+    // await OrderModel.findByIdAndDelete(decodeData.orderId)
+
+    //undo Products Stock + coupon usage
+    for(const Product of Order.products){
+        await ProductModel.findByIdAndUpdate(Product.ProductId,{
+            $inc: {stock:parseInt(Product.quantity)}
+        })
+    }
+    if(Order.CouponId){
+        const coupon=await CopounModel.findById(Order.CouponId)
+        if(!coupon){
+            return next(new Error('this coupoun is deleted',{cause:400}))
+        }
+        coupon.couponAssginedToUsers.map((ele)=>{
+            if(ele.userId.toString()==Order.userId.toString()){
+                ele.usageCount+=1
+            }
+        })
+    }
+
+    res.status(200).json({Message:'Your Order is Canceled',Order})
+
+}
+
+
+
+
 export const FromCartToOrder = async (req,res,next)=>{
     const userId=req.authUser._id
     const{cartId}=req.query
