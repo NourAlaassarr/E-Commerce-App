@@ -120,7 +120,7 @@ if (OrderDB.PaymentMethod == 'Card')
     }
     
             const tokenOrder = generateToken({ payload: { orderId: OrderDB._id }, signature: process.env.ORDER_TOKEN, expiresIn: '1d' })
-            console.log( `${req.protocol}://${req.headers.host}/Order/successOrder?token=${tokenOrder}`)
+            // console.log( `${req.protocol}://${req.headers.host}/Order/successOrder?token=${tokenOrder}`)
     ordersession = await paymentFunction({
         payment_method_types:['card'],
         mode: 'payment',
