@@ -56,10 +56,12 @@ const ProductOb={
 product.push(ProductOb)
 //Subtotal..................
 const SubTotal = ProductOb.finalPrice
+if(req.Coupon?.isFixedAmount && req.Coupon?.couponAmount > IsProductValid.PriceAfterDiscount)
+{
+    return next(new Error ('Please select another product',{cause:400}))
+}
 //PaidAmount.....................
-let PaidAmount = 0
-
-
+let PaidAmount 
 if(req.Coupon?.isPercentage)
 {
     PaidAmount= SubTotal *(1-(req.Coupon.couponAmount ||0)/100)

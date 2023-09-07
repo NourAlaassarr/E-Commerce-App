@@ -20,6 +20,7 @@ App.use('/User',router.UserRoutes)
 App.use('/Auth',router.AuthRoutes)
 App.use('/Cart',router.CartRoutes)
 App.use('/Order',router.OrderRoutes)
+App.use('/Review',router.ReviewRoutes)
 App.all('*',(req,res,next)=>
     res.status(404).json({ message: '404 URL Not Found' })
 )

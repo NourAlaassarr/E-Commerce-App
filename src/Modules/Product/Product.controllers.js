@@ -221,7 +221,8 @@ export const getAllProducts= async(req,res,next)=>{
 const{limit,skip} =paginationFunction({page,size})
 
 
-const products=await ProductModel.find().limit(limit).skip(skip)
+const products=await ProductModel.find().limit(limit).skip(skip).populate([{
+    path: 'Reviews'}])
 res.status(200).json({Message:'done',products})
 }
 
@@ -236,7 +237,8 @@ const products=await ProductModel.find({
         {description:{$regex:Searchkey,$options:'i'}},
 
     ]
-}).limit(limit).skip(skip)
+}).limit(limit).skip(skip).select('price desc').populate([{
+    path: 'Reviews'}])
 res.status(200).json({Message:'done',products})
 }
 

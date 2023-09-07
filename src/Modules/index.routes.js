@@ -7,4 +7,17 @@ import UserRoutes from './user/user.routes.js'
 import AuthRoutes from './Auth/auth.routes.js'
 import CartRoutes from './Cart/cart.routes.js'
 import OrderRoutes from './Order/Order.routes.js'
-export{CategoryRouter,SubCategoryRouter,BrandRouter,ProductRoutes,CouponRoutes,UserRoutes,AuthRoutes,CartRoutes,OrderRoutes}
+import ReviewRoutes from './Review/Review.Routes.js'
+export{
+    CategoryRouter,
+    SubCategoryRouter,
+    BrandRouter,
+    ProductRoutes,
+    CouponRoutes,
+    UserRoutes,
+    AuthRoutes,
+    CartRoutes,
+    OrderRoutes,
+    ReviewRoutes,
+
+}

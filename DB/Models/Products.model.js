@@ -77,7 +77,16 @@ Images: [
 CustomID:String,
 
 },
-{timestamps:true})
+{
+    timestamps:true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true},
+})
 
+ProductSchema.virtual('Reviews',{
+    ref:'Review',
+    foreignField:'ProductId',
+    localField:'_id'
+})
 
 export const ProductModel=model('Product',ProductSchema)
