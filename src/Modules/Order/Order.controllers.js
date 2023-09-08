@@ -350,3 +350,21 @@ return next(new Error('Fail to Create Order',{cause:400}))
 
 
 }
+// mark order as delivered
+export const DeliverOrdr = async(req,res,next)=>{
+    const {orderId}=req.query
+    const Order = await OrderModel.findOneAndUpdate({_id:orderId,
+    OrderStatus:{$nin:['Pending','Confirmed','Delivered','placed','Preparation','canceled','on way']},
+},
+{
+    OrderStatus:'Delivered',
+},{
+    new:true
+},)
+if(!Order)
+{
+    return next(new Error('invalid Order',{cause:400}))
+}
+return res.status(200).json({ message: 'Done', Order })
+
+}
