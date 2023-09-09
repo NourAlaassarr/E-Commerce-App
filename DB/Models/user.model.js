@@ -80,6 +80,11 @@ Code:{
 ChangePassAt:{
     type:Date
 },
+provider: {
+    type: String,
+    default: 'System',
+    enum: ['System', 'GOOGLE', 'facebook'],
+},
 
 },
 {timestamps:true})

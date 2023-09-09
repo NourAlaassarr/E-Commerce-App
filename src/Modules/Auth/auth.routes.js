@@ -8,5 +8,5 @@ router.get('/confirm/:token',asyncHandler(AuthControllers.Confirm))
 router.post('/LogIn',asyncHandler(AuthControllers.SignIN))
 router.patch('/ForgetPassword',asyncHandler(AuthControllers.ForgetPassword))
 router.patch('/reset/:token',asyncHandler(AuthControllers.reset))
-
+router.post('/loginWithGmail' , asyncHandler(AuthControllers.loginWithGmail))
 export default router
