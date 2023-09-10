@@ -20,4 +20,5 @@ asyncHandler(ProductController.UpdateProduct))
 router.get('/Get',asyncHandler(ProductController.getAllProducts))
 router.get('/ListProducts',asyncHandler(ProductController.listProducts))
 router.get('/GetByName',asyncHandler(ProductController.getAllProducts))
+router.delete('/Delete',ValidationCoreFunction(Validator.DeleteSchema),asyncHandler(ProductController.Delete))
 export default router

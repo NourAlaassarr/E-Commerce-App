@@ -1,5 +1,6 @@
 import Joi from "joi";
 import { generalFields } from "../../Middleware/Validation.js";
+import { generateToken } from "../../utils/TokenFunction.js";
 export const AddProduct ={
     body:Joi.object({
         name:Joi.string().min(5).max(55).required(),
@@ -42,4 +43,14 @@ export const UpdateProduct ={
         token:Joi.string().required()
     }).options({allowUnknown:true})
 
+}
+export const DeleteSchema={
+    query:Joi.object({
+        SubCategoryId:generalFields._id.required(),
+        Categoryid:generalFields._id.required(),
+        productId:generalFields._id.required()
+    }),
+    headers:Joi.object({
+        token:Joi.string().required()
+    }).options({allowUnknown:true})
 }

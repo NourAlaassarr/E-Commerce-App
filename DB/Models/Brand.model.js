@@ -43,5 +43,10 @@ const BrandSchema = new Schema({
 },{
     timestamps:true
 })
+BrandSchema.virtual('Products',{
+    ref:'Product',
+    localField:'_id',
+    foreignField:'BrandId'
+})
 
 export const BrandModel =model('Brand',BrandSchema)

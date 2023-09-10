@@ -14,8 +14,11 @@ CloudFunction(allowedExtensions.Image).single('logo'),
 ValidationCoreFunction(Validator.AddBrandSchema),
 asyncHandler(BrandController.AddBrand))
 
+router.delete('/Delete',
+ValidationCoreFunction(Validator.deleteSchema),
+asyncHandler(BrandController.Delete))
 
-
+router.get('/GetByname',asyncHandler(BrandController.GetByname))
 
 
 export default router

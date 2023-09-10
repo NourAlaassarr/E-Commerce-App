@@ -239,8 +239,6 @@ const products=await ProductModel.find({
 res.status(200).json({Message:'done',products})
 }
 
-
-
 //select filter sort
 export const listProducts= async(req,res,next)=>{
 //  onst{sort,page,size}=req.query
@@ -272,5 +270,40 @@ const products = await ApiFeatureInstance.mongooseQuery
 res.status(200).json({Message:'done',products})
 }
 
-//ToDo delete Product (owner)
-//* get sepcific product
+// delete Product (owner)
+export const Delete=async (req,res,next)=>{
+    const { Categoryid ,SubCategoryId,BrandId,productId}=req.query
+    const userId=req.authUser._id
+    const Category= await CategoryModel.findById({_id:Categoryid})
+    
+    if(!Category)
+    {
+        return next (new Error('invalid CategoryId',{cause:400}))
+    }
+    const SubCategory= await SubCategoryModel.findById({_id:SubCategoryId})
+    if(!Category)
+    {
+        return next (new Error('invalid SubCategoryId',{cause:400}))
+    }
+    const BrandExist= await BrandModel.findOneAndDelete({_id:BrandId})
+    if(!BrandExist){
+        return next(new Error('Invalid BrandId ', { cause: 400 }))
+    }
+    const Products= await ProductModel.findById({_id:productId})
+    if(!Products){
+        return next(new Error('Invalid BrandId ', { cause: 400 }))
+    }
+    if(req.authUser.role == SystemRules.Admin || Products.createdBy.toString()==userId.toString()){
+
+    // Delete resources within the folder
+    await cloudinary.api.delete_resources_by_prefix(`${process.env.Project_Folder}/Categories/${Category.CustomId}/SubCategories/${SubCategory.CustomId}/Brands/${BrandExist.CustomId}/Products/${Products.CustomID}`);
+    
+    // Then, delete the folder
+    await cloudinary.api.delete_folder(`${process.env.Project_Folder}/Categories/${Category.CustomId}/SubCategories/${SubCategory.CustomId}/Brands/${BrandExist.CustomId}/Products/${Products.CustomID}`);
+    
+    
+    res.status(200).json({ messsage: 'Deleted Done' })
+    }
+    return next(new Error('You are not authorized',{cause:400}))
+}
+
