@@ -11,6 +11,8 @@ import {generateQRcode}from'../../utils/QRFunction.js'
 import {paymentFunction}from'../../utils/Payment.js'
 import { VerifyToken, generateToken } from '../../utils/TokenFunction.js'
 import Stripe from 'stripe'
+
+
 //Create Order
 export const CreateOrder = async (req,res,next)=>{
     const{
@@ -208,6 +210,7 @@ res.status(201).json({
 })
 }
 
+//Success payment
 export const successPayament=async(req,res,next)=>{
     const{token}=req.query
     const decodeData=VerifyToken({token,signature:process.env.ORDER_TOKEN})
@@ -220,6 +223,9 @@ export const successPayament=async(req,res,next)=>{
     res.status(200).json({Message:'Your Order is Confirmed',Order})
 
 }
+
+
+//CancelPaymeent
 export const CancelPayment=async(req,res,next)=>{
     const{token}=req.query
     const decodeData=VerifyToken({token,signature:process.env.ORDER_TOKEN})
@@ -255,9 +261,7 @@ export const CancelPayment=async(req,res,next)=>{
 
 }
 
-
-
-
+//fromcart to order
 export const FromCartToOrder = async (req,res,next)=>{
     const userId=req.authUser._id
     const{cartId}=req.query
@@ -350,6 +354,7 @@ return next(new Error('Fail to Create Order',{cause:400}))
 
 
 }
+
 // mark order as delivered
 export const DeliverOrdr = async(req,res,next)=>{
     const {orderId}=req.query

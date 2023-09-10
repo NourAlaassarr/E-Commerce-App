@@ -23,3 +23,22 @@ export const DeleteCouponSchema={
 
     })
 }
+
+export const UpdateCouponSxhema={
+    body:Joi.object({
+        couponCode:Joi.string().min(5).max(55).optional(),
+        couponAmount:Joi.number().positive().min(1).max(100).optional(),
+}),
+query:Joi.object({
+    _id:generalFields._id.required(),
+
+}),
+headers:Joi.object({
+    token:Joi.string().required()
+}).options({allowUnknown:true})
+}
+export const GetAllSchema={
+    headers:Joi.object({
+        token:Joi.string().required()
+    }).options({allowUnknown:true})
+}

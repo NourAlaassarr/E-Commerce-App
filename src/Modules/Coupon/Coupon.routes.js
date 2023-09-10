@@ -16,6 +16,8 @@ ValidationCoreFunction(Validators.AddCouponSchema),asyncHandler(CouponController
 router.delete('/Delete',isAuth(),ValidationCoreFunction(Validators.DeleteCouponSchema),
 asyncHandler(CouponControllers.deleteCoupon))
 
-
+router.put('/UpdateCoupon',isAuth(),ValidationCoreFunction(Validators.UpdateCouponSxhema),
+asyncHandler(CouponControllers.UpdateCoupon))
+router.get('/GetAll',isAuth(),ValidationCoreFunction(Validators.GetAllSchema),asyncHandler(CouponControllers.GetAll))
 
 export default router
