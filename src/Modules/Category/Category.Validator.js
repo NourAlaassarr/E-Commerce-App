@@ -7,11 +7,17 @@ body:Joi.object({
 }).required(),
 params:Joi.object({
     CategoryId:generalFields._id
-})
+}),
+headers:Joi.object({
+    token:Joi.string().required()
+}).options({allowUnknown:true})
 }
 export const CreateCategorySchema={
 body:Joi.object({
     name:Joi.string().max(10).min(5)
 }).required().options({presence:'required'}),
+headers:Joi.object({
+    token:Joi.string().required()
+}).options({allowUnknown:true})
 
 }

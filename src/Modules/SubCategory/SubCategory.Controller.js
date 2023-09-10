@@ -57,7 +57,6 @@ res.status(200).json({Message:'Added successfully',SubCategory})
 }
 
 //get all subCategories with category Data
-
 export const GetAllSubCategories = async(req,res,next)=>{
     const SubCategories=await SubCategoryModel.find().populate({
         path:'CategoryID',
@@ -65,5 +64,8 @@ export const GetAllSubCategories = async(req,res,next)=>{
     })
     res.status(200).json({Message:'Done',SubCategories})
 }
-//delete 
-//update
+
+
+
+
+//TODOdelete 

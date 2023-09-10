@@ -8,11 +8,29 @@ import{OrderApiRoles}from'./Order.Endpoints.js'
 const router=Router()
 
 
-router.post('/Add',isAuth(),asyncHandler(OrderControllers.CreateOrder)
+router.post('/Add',isAuth(),
+ValidationCoreFunction(Validator.CreateOrderschema),
+asyncHandler(OrderControllers.CreateOrder)
 )
-router.post('/CartToOrder',isAuth(),asyncHandler(OrderControllers.FromCartToOrder))
-router.patch('/successOrder',asyncHandler(OrderControllers.successPayament))
-router.patch('/cancelOrder',asyncHandler(OrderControllers.CancelPayment))
-router.post('/deliver',isAuth(OrderApiRoles.DELIVER_ORDER),
+
+
+router.post('/CartToOrder',isAuth(),
+ValidationCoreFunction(Validator.FromCartToOrderSchema),
+asyncHandler(OrderControllers.FromCartToOrder))
+
+
+router.patch('/successOrder',
+ValidationCoreFunction(Validator.successPayamentSchema),
+asyncHandler(OrderControllers.successPayament))
+
+
+router.patch('/cancelOrder',
+ValidationCoreFunction(Validator.CancelPaymentSchema),
+asyncHandler(OrderControllers.CancelPayment))
+
+
+router.post('/deliver',
+isAuth(OrderApiRoles.DELIVER_ORDER),
+ValidationCoreFunction(Validator.DeliverOrdrSchema),
 asyncHandler(OrderControllers.DeliverOrdr))
 export default router

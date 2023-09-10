@@ -4,11 +4,14 @@ import * as BrandController from './Brand.Controller.js'
 import {allowedExtensions} from '../../utils/allowedExtensions.js'
 import {CloudFunction}from '../../Services/MulterCloud.js'
 import {isAuth}from'../../Middleware/auth.js'
-//TODO api Validation
+import* as Validator from'./Brand.Validator.js'
+import{ValidationCoreFunction}from'../../Middleware/Validation.js'
+
 const router = Router()
-//TODO api Validation
+
 router.post('/Add',isAuth(),
 CloudFunction(allowedExtensions.Image).single('logo'),
+ValidationCoreFunction(Validator.AddBrandSchema),
 asyncHandler(BrandController.AddBrand))
 
 

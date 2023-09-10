@@ -2,7 +2,7 @@ import { UserModel } from '../../../DB/Models/user.model.js'
 import { VerifyToken, generateToken } from '../../utils/TokenFunction.js'
 import { sendmailService } from '../../Services/SendEmailService.js'
 import { emailTemplate } from '../../utils/EmailTemplate.js'
-import pkg from 'bcrypt'
+import pkg, { compare, compareSync, hashSync } from 'bcrypt'
 import { nanoid } from 'nanoid'
 
 import { OAuth2Client } from 'google-auth-library';
@@ -173,7 +173,32 @@ export const reset = async (req, res, next) => {
     res.status(200).json({ Message: 'Done', ResetPassword })
 }
 
-//TODOchangePassword
+//changePassword
+export const ChangePassword=async(req,res,next)=>{
+    const {oldPassword, NewPassword,ConfirmNewPassword } = req.body
+    const userId = req.authUser._id
+    const user=await UserModel.findById({_id:userId})
+    const oldpass=compareSync(oldPassword,user.Password)
+    if(!oldpass){
+        return next(new Error('incorrect password', { cause: 400 }))
+    }
+    if (NewPassword != ConfirmNewPassword) {
+        return next(new Error('Password doesn\'t match', { cause: 400 }))
+    }
+
+    const newpass=hashSync(NewPassword,+process.env.SALT_ROUNDS)
+    
+    const updatedPass = await UserModel.findOneAndUpdate({_id:userId},
+        {Password:newpass,
+        Cpassword:newpass},{
+            new:true
+        })
+    
+
+    res.status(200).json({ Message: 'Done' ,updatedPass})
+}
+
+//login withgmail
 export const loginWithGmail = async (req, res, next) => {
     const client = new OAuth2Client()
     const { idToken } = req.body
@@ -241,4 +266,5 @@ export const loginWithGmail = async (req, res, next) => {
     newUser.status = 'Online'
     await newUser.save()
     res.status(200).json({ message: 'Verified', newUser })
+
 }
