@@ -165,9 +165,8 @@ await ProductModel.findByIdAndUpdate({_id:ProductId},{
     $inc:{stock: -parseInt(quantity)}//todecrease
 },
 )
-//TODO:Remove Product From UserCart if Exist
 
-
+//Remove Product From UserCart if Exist
 
 //..................invoice...................
 const orderCode = `${req.authUser.userName}_${nanoid(3)}`

@@ -202,6 +202,7 @@ export const ChangePassword=async(req,res,next)=>{
 export const loginWithGmail = async (req, res, next) => {
     const client = new OAuth2Client()
     const { idToken } = req.body
+    try{
     async function verify() {
         const ticket = await client.verifyIdToken({
             idToken,
@@ -209,8 +210,8 @@ export const loginWithGmail = async (req, res, next) => {
             // Or, if multiple clients access the backend:
             //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
         })
-        const payload = ticket.getPayload()
-        // return payload
+        const pay = ticket.getPayload()
+        return pay
     }
     const { email_verified, email, name } = await verify()
         if (!email_verified) {
@@ -247,6 +248,7 @@ export const loginWithGmail = async (req, res, next) => {
         userName: name,
         email,
         Password: nanoid(6),
+        Cpassword:nanoid(6),
         provider: 'GOOGLE',
         isConfirmed: true,
         phone: ' ',
@@ -266,5 +268,9 @@ export const loginWithGmail = async (req, res, next) => {
     newUser.status = 'Online'
     await newUser.save()
     res.status(200).json({ message: 'Verified', newUser })
-
+    }
+    catch (error) {
+        console.error('Error:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
 }
