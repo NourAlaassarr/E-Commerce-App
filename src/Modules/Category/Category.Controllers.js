@@ -109,8 +109,8 @@ if(!CategoryExist)
 {
     return next(new Error('Invalid Category Id',{cause:400}))
 }
-await cloudinary.api.delete_resources_by_prefix(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
-await cloudinary.api.delete_folder(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
+// await cloudinary.api.delete_resources_by_prefix(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
+// await cloudinary.api.delete_folder(`${process.env.PROJECT_FOLDER}/Categories/${CategoryExist.CustomId}`)
 // await cloudinary.uploader.destroy(CategoryExist.Image.public_id)
 
 const deleteSub = await SubCategoryModel.deleteMany({

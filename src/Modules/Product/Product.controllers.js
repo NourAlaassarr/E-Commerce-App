@@ -212,6 +212,7 @@ await product.save()
 res.status(200).json({Message:"done",product})
     }
 
+//get all products
 export const getAllProducts= async(req,res,next)=>{
     const{page,size}=req.query
 const{limit,skip} =paginationFunction({page,size})
@@ -271,4 +272,5 @@ const products = await ApiFeatureInstance.mongooseQuery
 res.status(200).json({Message:'done',products})
 }
 
-//ToDo delete Product
+//ToDo delete Product (owner)
+//* get sepcific product

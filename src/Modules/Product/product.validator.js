@@ -31,7 +31,7 @@ export const UpdateProduct ={
         size:Joi.array().items(Joi.string().required()).optional(),
         stock:Joi.number().integer().positive().min(1).required(),
         PriceAfterDiscount:Joi.number().positive().optional(),
-    }),
+    }).options({allowUnknown:true}),
     query:Joi.object({
         CategoryId:generalFields._id,
         SubCategoryId:generalFields._id,

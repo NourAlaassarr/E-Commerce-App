@@ -7,7 +7,7 @@ import cloudinary from '../../utils/CloudinaryConfig.js'
 import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('abcdef1234',4)
 
-
+//Add Brand
 export const AddBrand = async (req,res,next)=>{
 const{name}=req.body
 const{_id}=req.authUser
@@ -51,4 +51,8 @@ if(!DBbrand)
 }
 res.status(201).json({Message:'successfully Created',DBbrand})
 }
-//ToDo delete Brand
+
+
+//ToDo update and delete brand (admin and owner only )
+
+//TODO get sepcific brand

@@ -6,6 +6,8 @@ import { CategoryModel } from "../../../DB/Models/Category.model.js"
 import { SubCategoryModel } from "../../../DB/Models/SubCategory.model.js"
 import { customAlphabet } from "nanoid"
 import cloudinary from "../../utils/CloudinaryConfig.js"
+import { BrandModel } from "../../../DB/Models/Brand.model.js"
+import { ProductModel } from "../../../DB/Models/Products.model.js"
 
 const nanoid = customAlphabet('abcdefghijklmnop123456789',4)
 
@@ -68,4 +70,43 @@ export const GetAllSubCategories = async(req,res,next)=>{
 
 
 
-//TODOdelete 
+//delete subcategory
+export const Delete=async (req,res,next)=>{
+const { Categoryid ,SubCategoryId,}=req.query
+
+const Category= await CategoryModel.findById({_id:Categoryid})
+
+if(!Category)
+{
+    return next (new Error('invalid CategoryIdd',{cause:400}))
+}
+const SubExist= await SubCategoryModel.findOneAndDelete({_id:SubCategoryId})
+if(!SubExist){
+    return next(new Error('Invalid SUBCategory ', { cause: 400 }))
+}
+// Delete resources within the folder
+await cloudinary.api.delete_resources_by_prefix(`${process.env.Project_Folder}/Categories/${Category.CustomId}/SubCategories/${SubExist.CustomId}`);
+
+// Then, delete the folder
+await cloudinary.api.delete_folder(`${process.env.Project_Folder}/Categories/${Category.CustomId}/SubCategories/${SubExist.CustomId}`);
+
+
+
+const DeleteBrand = await BrandModel.deleteMany({
+    SubCategoryID:SubCategoryId,
+})
+const DeleteProduct=await ProductModel.deleteMany({
+    SubCategoryId:SubCategoryId
+})
+if(!DeleteBrand.deletedCount)
+{
+    return next(new Error('Deletion Failed ',{cause:400}))
+} 
+if(!DeleteProduct.deletedCount )
+{
+    return next(new Error('Deletion Failed ',{cause:400}))
+}
+
+
+res.status(200).json({ messsage: 'Deleted Done' })
+}

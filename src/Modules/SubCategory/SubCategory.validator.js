@@ -12,3 +12,9 @@ headers:Joi.object({
     token:Joi.string().required()
 }).options({allowUnknown:true})
 }
+export const deleteSchema={
+    query:Joi.object({
+        SubCategoryId:generalFields._id.required(),
+        Categoryid:generalFields._id.required(),
+    }),
+}

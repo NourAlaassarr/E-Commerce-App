@@ -17,11 +17,12 @@ router.post(
     asyncHandler(SubCategoryControllers.CreateSubCategory),
 )
 
-//ToDo delete SubCategory
 
 router.get('/Get',
 asyncHandler(SubCategoryControllers.GetAllSubCategories))
 
-
+router.delete('/Delete',
+ValidationCoreFunction(Validators.deleteSchema),
+asyncHandler(SubCategoryControllers.Delete))
 
 export default router
