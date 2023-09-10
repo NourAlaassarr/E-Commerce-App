@@ -18,6 +18,7 @@ router.delete('/Delete',
 ValidationCoreFunction(Validator.deleteSchema),
 asyncHandler(BrandController.Delete))
 
+router.put('/UpdateBrand',ValidationCoreFunction(Validator.Update),asyncHandler(BrandController.UpdateBrand))
 router.get('/GetByname',asyncHandler(BrandController.GetByname))
 
 

@@ -6,6 +6,7 @@ import cloudinary from '../../utils/CloudinaryConfig.js'
 
 import { customAlphabet } from 'nanoid'
 import { ProductModel } from '../../../DB/Models/Products.model.js'
+import { SystemRules } from '../../utils/SystemRules.js'
 const nanoid = customAlphabet('abcdef1234',4)
 
 //Add Brand
@@ -98,8 +99,6 @@ export const Delete=async (req,res,next)=>{
     return next(new Error('You are not authorized',{cause:400}))
 }
 
-
-    
 //get sepcific brand
 
 export const GetByname= async(req,res,next)=>{
@@ -108,3 +107,63 @@ export const GetByname= async(req,res,next)=>{
       .populate('Products') 
       res.status(200).json({ message: 'Done', Brands })
     }
+
+
+//Update Brand (owner, Admin)
+export const UpdateBrand=async(req,res,next)=>{
+        const {BrandId,Categoryid,SubCategoryId}=req.query
+        const {name}=req.body
+        const userId =req.authUser._id
+        const Category= await CategoryModel.findById({_id:Categoryid})
+    
+        if(!Category)
+        {
+            return next (new Error('invalid CategoryId',{cause:400}))
+        }
+        const SubCategory= await SubCategoryModel.findById({_id:SubCategoryId})
+        if(!Category)
+        {
+            return next (new Error('invalid SubCategoryId',{cause:400}))
+        }
+        const Brand = await BrandModel.findOne({_id:BrandId,createdBy:userId})
+        if(!Brand)
+        {
+            return next(new Error ('Invalid Brand Id', {cause:400}))
+        }
+        if(req.authUser.role==SystemRules.Admin || Brand.createdBy.toString()==userId.toString() )
+        {
+            if (name) {
+                // different from old name
+                if (Brand.name == name.toLowerCase()) {
+                    return next(
+                    new Error('please enter different name from the old Brand name', {cause: 400,}),
+                )
+                }
+            if (await BrandModel.findOne({ name })) {
+                return next(
+                    new Error('please enter different brand name', { cause: 400 }),
+                )
+                }
+                Brand.name=name
+        }
+        if(req.file)
+        {
+            await cloudinary.uploader.destroy(Brand.Logo.public_id)
+            const { secure_url, public_id } = await cloudinary.uploader.upload(
+                req.file.path,
+                {
+                    folder: `${process.env.PROJECT_FOLDER}/Categories/${Category.CustomId}/SubCategories/${SubCategory.CustomId}/Brands/${BrandExist.CustomId}`,
+                },
+            )
+            Brand.Logo={secure_url,public_id}
+        }
+        Brand.updatedBy=userId
+        await Brand.save()
+        res.status(200).json({ message: 'Successfully Updated', Brand })
+        }
+        return next(
+            new Error('You are not authorized for this action', { cause: 400 }),
+        )
+    }
+
+
