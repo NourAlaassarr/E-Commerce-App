@@ -26,5 +26,6 @@ router.delete('/Delete',isAuth(),
 asyncHandler(CategoryControllers.DeleteCategory))
 router.get('/Get', asyncHandler(CategoryControllers.getAllCategories))
 
+router.get('/GetByname',asyncHandler(CategoryControllers.GetByname))
 
 export default router

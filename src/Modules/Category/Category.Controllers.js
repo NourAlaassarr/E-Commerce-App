@@ -100,9 +100,6 @@ res.status(200).json({ message: ' Successfully Updated', Category })
 }
 
 
-
-
-
 //Delete Category
 export const DeleteCategory = async(req,res,next)=>{
 const {CategoryID}=req.query
@@ -147,7 +144,7 @@ if(!deleteProduct.deletedCount)
 
 }
 
-
+//Get all Category
 export const getAllCategories = async (req, res, next) => {
     const Categories = await CategoryModel.find().populate({
         path:'SubCategories',
@@ -179,4 +176,14 @@ export const getAllCategories = async (req, res, next) => {
     //     objectCat.subCategories = subCategories
     //     categoryArr.push(objectCat)
     // res.status(200).json({ message: 'Done', Categories: categoryArr })
+}
+
+
+//get sepcific category
+export const GetByname= async(req,res,next)=>{
+const {name}=req.body
+const Category=await CategoryModel.find({name})
+  .populate('SubCategories') 
+  .populate('Products') 
+  res.status(200).json({ message: 'Done', Category })
 }

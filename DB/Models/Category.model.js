@@ -40,10 +40,17 @@ const CategorySchema = new Schema({
     toObject: { virtuals: true } ,
 })
 
+//child parent
 CategorySchema.virtual('SubCategories',{
     ref:'SubCategory',
     localField:'_id',
     foreignField:'CategoryID'
 })
+CategorySchema.virtual('Products',{
+    ref:'Product',
+    localField:'_id',
+    foreignField:'CategoryId'
+})
+
 
 export const CategoryModel =model('Category',CategorySchema)
