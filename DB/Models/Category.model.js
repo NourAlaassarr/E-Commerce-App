@@ -17,17 +17,17 @@ const CategorySchema = new Schema({
     Image:{
         secure_url: {
             type: String,
-            required: true,
+            // required: true,
         },
         public_id: {
             type: String,
-            required: true,
+        //     required: true,
         },
         },
     createdBy:{
         type:Schema.ObjectId,
         ref:'user',
-        required:true, 
+        // required:true, 
     },
     updatedBy: {
         type: Schema.Types.ObjectId,

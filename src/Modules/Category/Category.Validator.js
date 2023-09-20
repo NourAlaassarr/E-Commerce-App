@@ -21,3 +21,6 @@ headers:Joi.object({
 }).options({allowUnknown:true})
 
 }
+export const CreateCategorySchemaQl=Joi.object({
+    name:Joi.string().min(4).max(55).required(),
+}).required()

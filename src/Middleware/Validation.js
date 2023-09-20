@@ -54,3 +54,12 @@ export const ValidationCoreFunction =(schema)=>{
         } 
     
 }
+
+export const GraphQlValidation=(schema,args)=>{
+    const validationResult = schema.validate(args,{abortEarly:false})
+    if(validationResult.error){
+        return new Error(validationResult.error)
+    }
+    return true
+
+}

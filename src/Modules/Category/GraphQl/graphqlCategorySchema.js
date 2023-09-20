@@ -1,5 +1,5 @@
 import { GraphQLObjectType, GraphQLSchema, GraphQLString } from "graphql";
-import{GetAllCategoryResolvers}from'./GraphQlCategoryResolvers.js'
+            import{GetAllCategoryResolvers,CreateCategory}from'./GraphQlCategoryResolvers.js'
 
 
 export const CategorySchema = new GraphQLSchema({
@@ -8,6 +8,7 @@ export const CategorySchema = new GraphQLSchema({
         description:'caategory query schema',
         fields:{
             GetAllCategories:GetAllCategoryResolvers,
+            CreateCategory:CreateCategory,
             }
         })
     })
