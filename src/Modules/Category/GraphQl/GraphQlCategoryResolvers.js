@@ -5,6 +5,8 @@ import * as types from './QraphQlTypes.js'
 import slugify from 'slugify'
 import { GraphQlValidation } from '../../../Middleware/Validation.js'
 import{CreateCategorySchemaQl}from'../Category.Validator.js'
+import { isAuthQl } from '../../../Middleware/auth.js'
+import { SystemRules } from '../../../utils/SystemRules.js'
 
 
 export const GetAllCategoryResolvers={
@@ -27,17 +29,29 @@ export const CreateCategory ={
     }),
     args:{
         name:{type:new GraphQLNonNull(GraphQLString)},
+        token:{type:new GraphQLNonNull(GraphQLString)}
     },
     resolve: async(__ , args)=>{
+        //authentication + authorization
+        const isAuthuser=await isAuthQl(args.token,[SystemRules.Admin])
+        console.log({isAuthuser})
+        if(!isAuthuser.code){
+            return isAuthuser
+        }
         //validation
         const ValidationRsults=GraphQlValidation(CreateCategorySchemaQl,args)
         if(ValidationRsults!==true){
             return ValidationRsults
         }
         const {name}=args
+        const CategoryExist = await CategoryModel.findOne({name})
+        if(CategoryExist){
+            return new Error('duplicate Category name',{cause:400})
+        }
         const CategoryObj={
             name:name,
             slug:slugify(name,'-'),
+            createdBy:isAuthuser.findUser._id
         }
         const Category= await CategoryModel.create(CategoryObj)
         return{

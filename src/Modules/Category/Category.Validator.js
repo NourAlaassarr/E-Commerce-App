@@ -23,4 +23,5 @@ headers:Joi.object({
 }
 export const CreateCategorySchemaQl=Joi.object({
     name:Joi.string().min(4).max(55).required(),
+    token:Joi.string().required()
 }).required()
