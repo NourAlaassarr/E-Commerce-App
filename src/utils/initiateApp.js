@@ -6,6 +6,9 @@ import{changeCouponStatus} from './Crons.js'
 import {createHandler} from'graphql-http/lib/use/express'
 import cors from 'cors'
 import { CategorySchema } from '../Modules/Category/GraphQl/graphqlCategorySchema.js'
+import {initiatio}from'../utils/iogeneration.js'
+
+
 export const InitiateApp =(App,express)=>{
 const Port =process.env.PORT || 5000
 
@@ -31,8 +34,14 @@ App.all('*',(req,res,next)=>
 App.use(GlobalResponse)
 changeCouponStatus()
 // gracefulShutdown
-App.listen(Port,()=>{
+
+const ServerApp=App.listen(Port,()=>{
     console.log(`---------------Server is Running on port number ${Port} !---------------`)
+})
+const io =initiatio(ServerApp)
+// const io = new Server(ServerApp)
+io.on('connection',(socket)=>{
+    console.log({socketId:socket.id})
 })
 }
 

@@ -25,6 +25,7 @@
     "pdfkit": "^0.13.0",
     "qrcode": "^1.5.3",
     "slugify": "^1.6.6",
+    "socket.io": "^4.7.2",
     "stripe": "^13.4.0"
   },
   "name": "e-commerce",

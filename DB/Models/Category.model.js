@@ -1,4 +1,4 @@
-import { Schema,model } from "mongoose";
+import { Schema,SchemaTypes,model } from "mongoose";
 
 const CategorySchema = new Schema({
 
@@ -25,7 +25,7 @@ const CategorySchema = new Schema({
         },
         },
     createdBy:{
-        type:Schema.ObjectId,
+        type:Schema.Types.ObjectId,
         ref:'user',
         // required:true, 
     },
